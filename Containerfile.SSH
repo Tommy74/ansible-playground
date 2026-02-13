@@ -1,0 +1,27 @@
+FROM amd64/fedora:latest
+
+USER root
+
+# Install SSH server and Python (required for Ansible)
+RUN dnf install -y openssh-server python3 sudo && \
+    dnf install -y iproute libmnl psmisc && \
+    dnf clean all
+
+RUN ssh-keygen -A
+
+RUN useradd -m -s /bin/bash ansible && \
+    echo 'ansible ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+# Set up SSH key authentication
+RUN mkdir -p /home/ansible/.ssh && \
+    chmod 700 /home/ansible/.ssh
+
+# Copy your public key (you'll need to create this first)
+COPY .ssh/ansible_test.pub /home/ansible/.ssh/authorized_keys
+
+RUN chmod 600 /home/ansible/.ssh/authorized_keys && \
+    chown -R ansible:ansible /home/ansible/.ssh
+
+EXPOSE 22
+
+CMD ["/usr/sbin/sshd", "-D"]

@@ -1,0 +1,46 @@
+---
+- name: Test
+  hosts: all
+  gather_facts: yes
+  tasks:
+    # - name: Gather all host IP addresses
+    #   set_fact:
+    #     all_host_ips: "{{ groups['all'] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | list }}"
+    #   run_once: true
+    #   delegate_to: localhost
+    #   delegate_facts: true
+
+    # - name: Print all available facts
+    #   ansible.builtin.debug:
+    #     var: ansible_facts['all_ipv4_addresses']
+    
+    - name: Fetch IP address using Python
+      #delegate_to: localhost
+      shell: "{{ ansible_playbook_python }} -c 'import socket; print(socket.gethostbyname(socket.gethostname()))'"
+      register: ip_address_result
+
+    - name: Display the IP address
+      debug:
+        var: ip_address_result.stdout
+
+    # - name: Create file with all IPs
+    #   when: inventory_hostname in groups["machine"]
+    #   copy:
+    #     content: |
+    #       {% for host in groups['test-machine'] %}
+    #       CLUSTERING_BAREMETAL_HOST{{ loop.index }}={{ hostvars[host]['ansible_default_ipv4']['address'] }}
+    #       {% endfor %}
+    #     dest: /tmp/all_hosts_ips.txt
+    #     mode: '0644'
+
+    # - name: Create templated file with all IPs
+    #   when: inventory_hostname in groups["machine"]
+    #   template:
+    #     src: templates/test-machines.txt.j2
+    #     dest: /tmp/test-machines.txt
+
+- name: Create file with all host IPs on each target
+  hosts: machine
+  gather_facts: yes
+  roles:
+  - role: create_test_machines_file

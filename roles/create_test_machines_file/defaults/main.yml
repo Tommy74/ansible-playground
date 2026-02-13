@@ -1,0 +1,5 @@
+---
+test_machines_target_machines_group_name: "machine"
+test_machines_group_name: "test-machine"
+test_machines_env_variable_prefix: "CLUSTERING_BAREMETAL_HOST"
+test_machines_file_path: "/tmp/test-machines.txt"

@@ -1,0 +1,24 @@
+FROM amd64/fedora:latest
+
+USER root
+
+# Install SSH server and Python (required for Ansible)
+RUN dnf install -y openssh-server python3 sudo && \
+    dnf install -y iproute libmnl psmisc && \
+    dnf clean all
+
+# Generate SSH host keys
+RUN ssh-keygen -A
+
+# Create a user for Ansible
+RUN useradd -m -s /bin/bash ansible && \
+    echo 'ansible:ansible' | chpasswd && \
+    echo 'ansible ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+# Configure SSH for password authentication (testing only!)
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+    sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+
+EXPOSE 22
+
+CMD ["/usr/sbin/sshd", "-D"]

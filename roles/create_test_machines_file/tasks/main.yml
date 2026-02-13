@@ -1,0 +1,6 @@
+---
+- name: Create file with all IPs
+  when: inventory_hostname in groups["{{ test_machines_target_machines_group_name }}"]
+  template:
+    src: test-machines.txt.j2
+    dest: "{{ test_machines_file_path }}"
