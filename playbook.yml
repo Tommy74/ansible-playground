@@ -44,3 +44,21 @@
   gather_facts: yes
   roles:
   - role: create_test_machines_file
+
+- name: Generate SSH key pair on source node
+  hosts: machine
+  become: yes
+  roles:
+    - role: ssh_keygen
+      vars:
+        ssh_key_user: pippo
+
+- name: Distribute public key to target nodes
+  hosts: test-machine
+  become: yes
+  roles:
+    - role: ssh_authorize
+      vars:
+        ssh_key_user: pippo
+        ssh_key_group: pippo
+        ssh_public_key: "{{ hostvars[groups['machine'][0]]['ssh_public_key'] }}"

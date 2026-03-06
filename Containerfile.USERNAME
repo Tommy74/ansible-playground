@@ -3,7 +3,7 @@ FROM amd64/fedora:latest
 USER root
 
 # Install SSH server and Python (required for Ansible)
-RUN dnf install -y openssh-server python3 sudo && \
+RUN dnf install -y openssh openssh-server ssh python3 sudo && \
     dnf install -y iproute libmnl psmisc && \
     dnf clean all
 
@@ -18,6 +18,17 @@ RUN useradd -m -s /bin/bash ansible && \
 # Configure SSH for password authentication (testing only!)
 RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
     sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+
+# Create a group and user for CI
+RUN groupadd pippo && \
+    useradd -m -s /bin/bash -g pippo pippo && \
+    echo 'pippo:pippo' | chpasswd && \
+    echo 'pippo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+# Set up SSH key authentication
+RUN mkdir -p /home/pippo/.ssh && \
+    chmod 700 /home/pippo/.ssh && \
+    chown -R pippo:pippo /home/pippo/.ssh
 
 EXPOSE 22
 

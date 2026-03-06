@@ -1,0 +1,6 @@
+---
+- name: Add public key to authorized_keys
+  ansible.posix.authorized_key:
+    user: "{{ ssh_key_user }}"
+    key: "{{ ssh_public_key }}"
+    state: present
