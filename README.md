@@ -1,4 +1,4 @@
-## Ansible Playground
+# Ansible Playground
 
 This project demonstrates:
 
