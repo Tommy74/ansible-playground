@@ -2,8 +2,8 @@
 
 This project demonstrates:
 
-1. Creating some Podman images to be used as Ansible hosts: this image is pre-configured in order to SSH into it using a local Private Key
-2. Running an Ansible Playbook that creates a new SSH Private Key on one Ansible host and distributes the corresponding SSH Public Key to the other Ansible hosts
+1. Creating a Podman image to be used as Ansible hosts: this image is pre-configured in order to SSH into it using a local Private Key
+2. Running an Ansible Playbook that creates a new SSH Private Key on one Ansible host and distributes the corresponding SSH Public Key to the remaining Ansible hosts
 
 ## Generate SSH key if you don't have one
 ```shell
