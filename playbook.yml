@@ -77,6 +77,3 @@
         controller_nodes_group_name: "machine"
         worker_nodes_group_name: "test_machine"
         ssh_key_user: "ci"
-        # test-machines file
-        worker_nodes_list_file_path: "/home/ci/test-machines.txt"
-        worker_nodes_list_file_owner: "ci"
