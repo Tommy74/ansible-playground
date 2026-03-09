@@ -1,5 +1,8 @@
 ---
 test_machines_target_machines_group_name: "machine"
-test_machines_group_name: "test-machine"
+test_machines_group_name: "test_machine"
 test_machines_env_variable_prefix: "CLUSTERING_BAREMETAL_HOST"
-test_machines_file_path: "/tmp/test-machines.txt"
+test_machines_file_path: "{{ ansible_env.HOME }}/test-machines.txt"
+test_machines_file_owner: "{{ ansible_user_id }}"
+test_machines_file_group: "{{ test_machines_file_owner }}"
+test_machines_file_mode: '0744'

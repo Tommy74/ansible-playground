@@ -9,29 +9,18 @@ RUN dnf install -y openssh openssh-server ssh python3 sudo iproute libmnl psmisc
 RUN ssh-keygen -A
 
 # Create a user for Ansible
-RUN useradd -m -s /bin/bash ansible && \
-    echo 'ansible ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+RUN useradd -m -s /bin/bash ci && \
+    echo 'ci ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 # Set up SSH key authentication
-RUN mkdir -p /home/ansible/.ssh && \
-    chmod 700 /home/ansible/.ssh
+RUN mkdir -p /home/ci/.ssh && \
+    chmod 700 /home/ci/.ssh
 
 # Copy your public key (you'll need to create this first)
-COPY .ssh/ansible_test.pub /home/ansible/.ssh/authorized_keys
+COPY .ssh/ci_test.pub /home/ci/.ssh/authorized_keys
 
-RUN chmod 600 /home/ansible/.ssh/authorized_keys && \
-    chown -R ansible:ansible /home/ansible/.ssh
-
-# Create a group and user for CI
-RUN groupadd pippo && \
-    useradd -m -s /bin/bash -g pippo pippo && \
-    echo 'pippo:pippo' | chpasswd && \
-    echo 'pippo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-
-# Set up SSH key authentication
-RUN mkdir -p /home/pippo/.ssh && \
-    chmod 700 /home/pippo/.ssh && \
-    chown -R pippo:pippo /home/pippo/.ssh
+RUN chmod 600 /home/ci/.ssh/authorized_keys && \
+    chown -R ci:ci /home/ci/.ssh
 
 EXPOSE 22
 

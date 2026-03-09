@@ -27,7 +27,7 @@
     #   when: inventory_hostname in groups["machine"]
     #   copy:
     #     content: |
-    #       {% for host in groups['test-machine'] %}
+    #       {% for host in groups['test_machine'] %}
     #       CLUSTERING_BAREMETAL_HOST{{ loop.index }}={{ hostvars[host]['ansible_default_ipv4']['address'] }}
     #       {% endfor %}
     #     dest: /tmp/all_hosts_ips.txt
@@ -39,26 +39,30 @@
     #     src: templates/test-machines.txt.j2
     #     dest: /tmp/test-machines.txt
 
-- name: Create file with all host IPs on each target
-  hosts: machine
-  gather_facts: yes
-  roles:
-  - role: create_test_machines_file
-
-- name: Generate SSH key pair on source node
+- name: Generate SSH key pair on coordinator node
   hosts: machine
   become: yes
   roles:
     - role: ssh_keygen
       vars:
-        ssh_key_user: pippo
+        ssh_key_user: ci
 
-- name: Distribute public key to target nodes
-  hosts: test-machine
+- name: Distribute public key to worker nodes
+  hosts: test_machine
   become: yes
   roles:
     - role: ssh_authorize
       vars:
-        ssh_key_user: pippo
-        ssh_key_group: pippo
+        ssh_key_user: ci
+        ssh_key_group: ci
         ssh_public_key: "{{ hostvars[groups['machine'][0]]['ssh_public_key'] }}"
+
+- name: Create file with all host IPs on each coordinator node
+  hosts: machine
+  gather_facts: yes
+  roles:
+    - role: create_test_machines_file
+      vars:
+        test_machines_file_path: "/home/ci/test-machines.txt"
+        test_machines_file_owner: "ci"
+        test_machines_file_group: "ci"

@@ -1,6 +1,7 @@
 ---
-ssh_key_user: ansible
-ssh_key_group: ansible
+ssh_key_user: ci
+ssh_key_group: "{{ ssh_key_user }}"
+ssh_key_id: "_{{ ssh_key_user }}_{{ ssh_key_group }}"
 ssh_key_type: ed25519
 ssh_key_file: ".ssh/id_{{ ssh_key_type }}"
 ssh_key_comment: "{{ ssh_key_user }}@{{ inventory_hostname }}"

@@ -11,24 +11,13 @@ RUN dnf install -y openssh openssh-server ssh python3 sudo && \
 RUN ssh-keygen -A
 
 # Create a user for Ansible
-RUN useradd -m -s /bin/bash ansible && \
-    echo 'ansible:ansible' | chpasswd && \
-    echo 'ansible ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+RUN useradd -m -s /bin/bash ci && \
+    echo 'ci:ci' | chpasswd && \
+    echo 'ci ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 # Configure SSH for password authentication (testing only!)
 RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
     sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
-
-# Create a group and user for CI
-RUN groupadd pippo && \
-    useradd -m -s /bin/bash -g pippo pippo && \
-    echo 'pippo:pippo' | chpasswd && \
-    echo 'pippo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-
-# Set up SSH key authentication
-RUN mkdir -p /home/pippo/.ssh && \
-    chmod 700 /home/pippo/.ssh && \
-    chown -R pippo:pippo /home/pippo/.ssh
 
 EXPOSE 22
 

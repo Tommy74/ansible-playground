@@ -1,6 +1,9 @@
 ---
 - name: Create file with all IPs
-  when: inventory_hostname in groups["{{ test_machines_target_machines_group_name }}"]
+  when: inventory_hostname in groups[test_machines_target_machines_group_name]
   template:
     src: test-machines.txt.j2
     dest: "{{ test_machines_file_path }}"
+    owner: "{{ test_machines_file_owner }}"
+    group: "{{ test_machines_file_group }}"
+    mode: "{{ test_machines_file_mode }}"
