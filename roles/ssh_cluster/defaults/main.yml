@@ -1,0 +1,16 @@
+---
+# nodes with private key
+controller_nodes_group_name: "machine"
+# nodes with public keys
+worker_nodes_group_name: "test_machine"
+# ssh user
+ssh_key_user: "{{ ansible_env.USER }}"
+ssh_key_id: "_internal"
+ssh_key_type: ed25519
+ssh_key_file: ".ssh/id{{ ssh_key_id }}_{{ ssh_key_type }}"
+ssh_key_comment: "{{ ssh_key_user }}@{{ inventory_hostname }}"
+# test-machines file
+worker_nodes_list_file_path: "{{ ansible_env.HOME }}/test-machines.txt"
+worker_nodes_list_file_owner: "{{ ansible_user_id }}"
+worker_nodes_list_file_mode: '0744'
+worker_nodes_list_file_env_variable_prefix: "CLUSTERING_BAREMETAL_HOST"

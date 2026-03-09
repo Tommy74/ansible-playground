@@ -1,0 +1,3 @@
+{% for worker_node in groups[ worker_nodes_group_name ] %}
+{{ worker_nodes_list_file_env_variable_prefix }}{{ loop.index }}={{ hostvars[worker_node]['ansible_default_ipv4']['address'] }}
+{% endfor %}
