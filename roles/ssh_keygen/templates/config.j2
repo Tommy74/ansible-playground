@@ -1,0 +1,4 @@
+{% for host in groups[ test_machines_group_name ] %}
+Host {{ hostvars[host]['ansible_default_ipv4']['address'] }}
+  IdentityFile ~/{{ ssh_key_file }}
+{% endfor %}

@@ -46,6 +46,7 @@
     - role: ssh_keygen
       vars:
         ssh_key_user: ci
+        test_machines_group_name: "test_machine"
 
 - name: Distribute public key to worker nodes
   hosts: test_machine
