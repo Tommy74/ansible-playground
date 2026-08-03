@@ -72,8 +72,16 @@
   hosts: machine:test_machine
   gather_facts: yes
   roles:
+#    - role: ssh_cluster
+#      vars:
+#        controller_nodes_group_name: "machine"
+#        worker_nodes_group_name: "test_machine"
+#        ssh_key_user: "ci"
     - role: ssh_cluster
       vars:
+        ssh_key_user: "ci"
+        # NOTE: the following values are set in ansible-fyrertp-eap-qe-jenkins_rhel-7machines.yml / ansible-fyrertp-eap-qe-jenkins_rhel-9machines.yml:
         controller_nodes_group_name: "machine"
         worker_nodes_group_name: "test_machine"
-        ssh_key_user: "ci"
+        worker_nodes_list_file_env_variable_prefix: "CLUSTERING_BAREMETAL_HOST"
+        worker_nodes_list_file_path: "/tmp/test-machines.txt"

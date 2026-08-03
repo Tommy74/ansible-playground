@@ -11,7 +11,7 @@
 # configure private key on controller
 - name: Ensure .ssh directory exists on controller and workers
   file:
-    path: "{{ ansible_facts['env']['HOME'] }}/.ssh"
+    path: "{{ ansible_env.HOME }}/.ssh"
     state: directory
     owner: "{{ ssh_key_user }}"
     mode: "700"
@@ -19,7 +19,7 @@
 - name: Generate SSH key pair on controller node
   when: inventory_hostname in groups[controller_nodes_group_name]
   community.crypto.openssh_keypair:
-    path: "{{ ansible_facts['env']['HOME'] }}/{{ ssh_key_file }}"
+    path: "{{ ansible_env.HOME }}/{{ ssh_key_file }}"
     type: "{{ ssh_key_type }}"
     comment: "{{ ssh_key_comment }}"
     owner: "{{ ssh_key_user }}"
@@ -28,7 +28,7 @@
 - name: Read public key
   when: inventory_hostname in groups[controller_nodes_group_name]
   slurp:
-    src: "{{ ansible_facts['env']['HOME'] }}/{{ ssh_key_file }}.pub"
+    src: "{{ ansible_env.HOME }}/{{ ssh_key_file }}.pub"
   register: ssh_public_key_file
 
 - name: Set public key fact for use by other plays
@@ -40,20 +40,20 @@
   when: inventory_hostname in groups[controller_nodes_group_name]
   template:
     src: config.j2
-    dest: "{{ ansible_facts['env']['HOME'] }}/config.tmp"
+    dest: "{{ ansible_env.HOME }}/config.tmp"
     owner: "{{ ssh_key_user }}"
     mode: "644"
 
 - name: 2. Configure SSH to use new PK when connecting to specific hosts
   when: inventory_hostname in groups[controller_nodes_group_name]
   slurp:
-    src: "{{ ansible_facts['env']['HOME'] }}/config.tmp"
+    src: "{{ ansible_env.HOME }}/config.tmp"
   register: ssh_config_tmp
 
 - name: 3. Configure SSH to use new PK when connecting to specific hosts
   when: inventory_hostname in groups[controller_nodes_group_name]
   blockinfile:
-    path: "{{ ansible_facts['env']['HOME'] }}/.ssh/config"
+    path: "{{ ansible_env.HOME }}/.ssh/config"
     block: "{{ ssh_config_tmp.content | b64decode }}"
     marker: "# {mark} ANSIBLE MANAGED BLOCK - {{ ssh_key_comment }}"
     create: true
